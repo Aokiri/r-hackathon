@@ -2,7 +2,14 @@ Package: hackpkg
 Type: Package
 Title: What the Package Does (One Line, Title Case)
 Version: 0.1.0
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Authors@R: c(
+    person("Alan", "Dominguez", email = "usagiyneko@gmail.com", role = c("aut", "cre")),
+    person("Nathan", "Ferrari", email = "nathan.ferrari@student.supsi.ch", role = "aut"),
+    person("Federico", "Lombardo", email = "federico.lombardo@student.supsi.ch", role = "aut"),
+    person("Francesco", "Masolini", email = "francesco.masolini@student.supsi.ch", role = "aut"),
+    person("Viktoria", "Kubisova", email = "viktoria.kubisova@student.supsi.ch", role = "aut"),
+    person("Maithili", "Nalawade", email = "maithili.nalawade@student.supsi.ch", role = "aut")
+  )
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8

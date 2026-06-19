@@ -17,7 +17,7 @@ and produces a regional map where each city is coloured by its **median waiting
 time** and sized by **population**.
 
 The package covers the full pipeline from raw CSV data to the final map through
-six exported functions, each handling one step.
+seven exported functions, each handling one step.
 
 ---
 
@@ -104,14 +104,9 @@ SwissCities.csv
       v
   query table  (70 rows: 1 origin x 14 destinations x 5 times)
       |
-      |  get_routes_batch()      5 batch API calls (one per time slot) via the
-      |                          one_to_many endpoint; results cached as .rds
-      |                          reads each response from cache (no network)
-      v
-  raw API responses  (stored in cache/)
-      |
-      |  parse_routes()          flatten each response to one row per connection,
-      |                          combined with dplyr::bind_rows()
+      |  fetch_all_routes()      5 batch API calls via the one_to_many endpoint;
+      |                          results cached as .rds; parses and combines all
+      |                          connections into one data frame
       v
   all_routes table
       |
@@ -132,8 +127,10 @@ SwissCities.csv
 |----------|---------|
 | `read_stations()` | Reads `SwissCities.csv` and filters to the group's region. Station IDs are read as character strings so they pass correctly to the API. |
 | `build_query_table()` | Builds every origin-destination-time combination as a tidy query table that drives the download loop. |
-| `get_routes_batch()` | Fetches routes for all destinations in a single request per time slot using the search.ch `one_to_many` endpoint (5 API calls instead of 70).|
+| `fetch_all_routes()` | Main fetch function for the workflow. Calls `get_routes_batch()` to download all routes (5 API calls), then parses and combines them into a single data frame. Subsequent calls read from cache with no network requests. |
+| `get_routes_batch()` | Low-level batch fetcher. Uses the search.ch `one_to_many` endpoint to retrieve all destinations in one request per time slot and saves results to cache. Called internally by `fetch_all_routes()`. |
 | `parse_routes()` | Flattens one raw API response into a tidy data frame, one row per connection. |
+| `parse_legs()` | Extracts the legs (individual transport segments) from one API response into a tidy data frame. |
 | `compute_waiting_times()` | For each query keeps the smallest non-negative wait, then summarises the median wait per destination. |
 | `waiting_time_map()` | Produces the regional waiting-time map: canton boundaries, destinations coloured by median wait and sized by population, origin marked with a star. |
 
@@ -148,20 +145,30 @@ workflow in one line:
 source(system.file("example_workflow.R", package = "hackpkg"))
 ```
 
-This script handles the full pipeline: reading stations, fetching routes via
-`get_routes_batch()` (5 API calls total), parsing connections, computing
-waiting times, and saving the map as `waiting_time_map.png` in the working
-directory.
+The script runs the full pipeline in five lines — one package function per step:
+
+```r
+stations    <- read_stations(...)
+query_table <- build_query_table(stations, DATE, TIMES)
+all_routes  <- fetch_all_routes(query_table)
+waiting     <- compute_waiting_times(all_routes, query_table)
+map         <- waiting_time_map(stations, waiting, ...)
+```
+
+`fetch_all_routes()` makes 5 API calls on the first run and reads from cache
+on every subsequent run. The map is saved as `waiting_time_map.png` in the
+working directory.
 
 ---
 
 ## Key design choices
 
-**Minimal API calls with batch fetching.** `get_routes_batch()` uses the
-search.ch `one_to_many` endpoint to retrieve all 14 destinations in a single
-request per time slot, reducing the total from 70 individual calls to 5. Each
-result is saved to `cache/` as a named `.rds` file (filename encodes origin,
-destination, date, and time).
+**Minimal API calls with batch fetching.** `fetch_all_routes()` calls
+`get_routes_batch()` internally, which uses the search.ch `one_to_many`
+endpoint to retrieve all 14 destinations in a single request per time slot,
+reducing the total from 70 individual calls to 5. Each result is saved to
+`cache/` as a named `.rds` file (filename encodes origin, destination, date,
+and time), so every subsequent run reads from disk with no network requests.
 
 **Flat function interfaces.** Every function takes and returns plain data frames,
 with no wrapper classes or shared state. Each step is independently testable and

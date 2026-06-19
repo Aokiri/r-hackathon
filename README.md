@@ -104,7 +104,9 @@ SwissCities.csv
       v
   query table  (70 rows: 1 origin x 14 destinations x 5 times)
       |
-      |  get_route()             one API call per row, cached locally as .rds
+      |  get_routes_batch()      5 batch API calls (one per time slot) via the
+      |                          one_to_many endpoint; results cached as .rds
+      |  get_route()             reads each response from cache (no network)
       v
   raw API responses  (stored in cache/)
       |
@@ -130,6 +132,7 @@ SwissCities.csv
 |----------|---------|
 | `read_stations()` | Reads `SwissCities.csv` and filters to the group's region. Station IDs are read as character strings so they pass correctly to the API. |
 | `build_query_table()` | Builds every origin-destination-time combination as a tidy query table that drives the download loop. |
+| `get_routes_batch()` | Fetches routes for all destinations in a single request per time slot using the search.ch `one_to_many` endpoint (5 API calls instead of 70). Saves each result to the same cache format as `get_route()`. |
 | `get_route()` | Downloads one route from the search.ch API, with local caching. Returns a cached `.rds` file if one exists, otherwise calls the API and saves the response. |
 | `parse_routes()` | Flattens one raw API response into a tidy data frame, one row per connection. |
 | `compute_waiting_times()` | For each query keeps the smallest non-negative wait, then summarises the median wait per destination. |
@@ -155,7 +158,13 @@ stations <- read_stations(
 # 2. Build the query table: every origin x destination x time
 query_table <- build_query_table(stations, DATE, TIMES)
 
-# 3. Download each route (cached, so safe to re-run), parse, and combine
+# 3. Pre-fetch all routes: 5 batch API calls instead of 70 individual ones.
+#    Results are cached as .rds files; get_route() below reads from that cache.
+to_ids <- unique(query_table$to_station_id)
+get_routes_batch(unique(query_table$from_station_id), to_ids, DATE, TIMES,
+                 cache_dir = "cache")
+
+# 4. Load from cache, parse, and combine
 all_routes <- dplyr::bind_rows(
   lapply(seq_len(nrow(query_table)), function(i) {
     row  <- query_table[i, ]
@@ -166,10 +175,10 @@ all_routes <- dplyr::bind_rows(
   })
 )
 
-# 4. Compute median waiting time per destination
+# 5. Compute median waiting time per destination
 waiting <- compute_waiting_times(all_routes, query_table)
 
-# 5. Draw and save the waiting-time accessibility map
+# 6. Draw and save the waiting-time accessibility map
 map <- waiting_time_map(
   stations, waiting,
   system.file("extdata", "boundaries", package = "hackpkg")
@@ -188,11 +197,12 @@ source(system.file("example_workflow.R", package = "hackpkg"))
 
 ## Key design choices
 
-**Caching by file.** Each API response is saved as a named `.rds` file in a
-`cache/` directory. The filename encodes all four query parameters, so the cache
-is self-documenting and the lookup is a single `file.exists()` call. The full
-download runs once; every later run reads from disk in milliseconds rather than
-repeating 70 network requests. This keeps the number of API calls to a minimum.
+**Minimal API calls with batch fetching.** `get_routes_batch()` uses the
+search.ch `one_to_many` endpoint to retrieve all 14 destinations in a single
+request per time slot, reducing the total from 70 individual calls to 5. Each
+result is saved to `cache/` as a named `.rds` file (filename encodes origin,
+destination, date, and time), so `get_route()` reads from disk on every
+subsequent run without making any further network requests.
 
 **Flat function interfaces.** Every function takes and returns plain data frames,
 with no wrapper classes or shared state. Each step is independently testable and

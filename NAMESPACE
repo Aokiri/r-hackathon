@@ -2,6 +2,7 @@
 
 export(build_query_table)
 export(compute_waiting_times)
+export(fetch_all_routes)
 export(get_routes_batch)
 export(parse_legs)
 export(parse_routes)

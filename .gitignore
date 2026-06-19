@@ -3,3 +3,7 @@
 .RData
 .Ruserdata
 data/
+cache/
+populate_cache.R
+*.png
+Rplots.pdf

@@ -24,5 +24,6 @@ Imports:
     ggplot2,
     httr,
     jsonlite,
+    readr,
     rlang,
     sf

@@ -15,9 +15,9 @@ get_route(from, to, date, time, num = 5, cache_dir = "cache")
 
 \item{time}{Time string ("HH:MM").}
 
-\item{num}{Number of connections to retrieve.}
+\item{num}{Number of connections to retrieve (default 5).}
 
-\item{cache_dir}{Path to the directory used for caching responses.}
+\item{cache_dir}{Path to the directory used for caching responses (default "cache").}
 }
 \value{
 A list with the parsed JSON response from the API.

@@ -6,7 +6,9 @@
 #' @param stations Data frame returned by \code{read_stations}.
 #' @param date Query date as a string ("YYYY-MM-DD").
 #' @param times Character vector of query times ("HH:MM"), at most 5.
-#' @return A data frame with one row per origin-destination-time combination.
+#' @return A data frame with one row per origin-destination-time combination,
+#'   with columns group_id, region, from_city, to_city, from_station_id,
+#'   to_station_id, query_date, query_time.
 #' @export
 #' @examples
 #' stations <- data.frame(

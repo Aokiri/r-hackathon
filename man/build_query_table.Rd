@@ -14,7 +14,9 @@ build_query_table(stations, date, times)
 \item{times}{Character vector of query times ("HH:MM"), at most 5.}
 }
 \value{
-A data frame with one row per origin-destination-time combination.
+A data frame with one row per origin-destination-time combination,
+  with columns group_id, region, from_city, to_city, from_station_id,
+  to_station_id, query_date, query_time.
 }
 \description{
 Produces all combinations of origin and destination stations crossed with

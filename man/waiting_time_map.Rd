@@ -22,8 +22,9 @@ A ggplot2 object.
 }
 \description{
 Produces a map of Switzerland with the group's cantons highlighted,
-destination cities shown as points colored by median waiting time and sized
-by population, and the origin station marked with a star.
+straight-line connections from the origin to each destination, destination
+cities shown as points colored by median waiting time and sized by
+population, and the origin station marked with a star.
 }
 \examples{
 \dontrun{

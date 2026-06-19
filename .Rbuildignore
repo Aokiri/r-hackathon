@@ -3,3 +3,5 @@
 ^LICENSE\.md$
 ^cache$
 ^populate_cache\.R$
+^waiting_time_map\.png$
+^Rplots\.pdf$

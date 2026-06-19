@@ -21,4 +21,7 @@ waiting <- compute_waiting_times(all_routes, query_table)
 
 map <- waiting_time_map(stations, waiting, system.file("extdata", "boundaries", package = "hackpkg"))
 print(map)
-ggplot2::ggsave("waiting_time_map.png", map, width = 10, height = 7)
+
+output_file <- "waiting_time_map.png"
+ggplot2::ggsave(output_file, map, width = 10, height = 7, dpi = 300)
+cat("Map saved to:", output_file, "\n")

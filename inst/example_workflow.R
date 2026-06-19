@@ -7,7 +7,13 @@ TIMES  <- c("08:00", "10:00", "12:00", "14:00", "16:00")
 stations    <- read_stations(system.file("extdata", "SwissCities.csv", package = "hackpkg"), REGION)
 query_table <- build_query_table(stations, DATE, TIMES)
 
-# Fetch all responses (reads from cache when available)
+# Fetch all routes: one API call per time slot (5 total) instead of one per
+# origin-destination-time combination (70 total). Results go to cache so the
+# loop below reads everything locally with no further network requests.
+to_ids <- unique(query_table$to_station_id)
+get_routes_batch(unique(query_table$from_station_id), to_ids, DATE, TIMES, cache_dir = "cache")
+
+# Load from cache
 responses <- lapply(seq_len(nrow(query_table)), function(i) {
   row <- query_table[i, ]
   get_route(row$from_station_id, row$to_station_id,

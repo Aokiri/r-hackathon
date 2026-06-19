@@ -21,15 +21,14 @@ get_routes_batch(from, to, date, times, num = 5, cache_dir = "cache")
 }
 \value{
 Invisibly returns \code{NULL}. Results are written to \code{cache_dir}
-  in the same format as \code{\link{get_route}} so the rest of the workflow
-  is unchanged.
+  as \code{.rds} files named \code{<from>_<to>_<date>_<time>.rds}.
 }
 \description{
 Uses the search.ch \code{one_to_many} endpoint to retrieve routes from one
 origin to multiple destinations, issuing one request per time slot instead
-of one request per destination. Results are cached individually so that
-\code{\link{get_route}} can read them on subsequent runs without any further
-API calls.
+of one request per destination (5 calls total for the default 5 time slots).
+Results are cached as \code{.rds} files and can be loaded with
+\code{readRDS} or re-used in subsequent runs without any further API calls.
 }
 \examples{
 \dontrun{

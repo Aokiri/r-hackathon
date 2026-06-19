@@ -13,6 +13,7 @@
 #'   \code{system.file("extdata", "boundaries", package = "hackpkg")} for the
 #'   bundled data.
 #' @return A ggplot2 object.
+#' @importFrom rlang .data
 #' @export
 #' @examples
 #' \dontrun{

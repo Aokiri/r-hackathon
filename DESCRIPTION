@@ -22,5 +22,7 @@ Depends:
 Imports:
     dplyr,
     ggplot2,
+    httr,
+    jsonlite,
     rlang,
     sf

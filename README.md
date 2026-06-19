@@ -106,7 +106,7 @@ SwissCities.csv
       |
       |  get_routes_batch()      5 batch API calls (one per time slot) via the
       |                          one_to_many endpoint; results cached as .rds
-      |  get_route()             reads each response from cache (no network)
+      |                          reads each response from cache (no network)
       v
   raw API responses  (stored in cache/)
       |
@@ -132,8 +132,7 @@ SwissCities.csv
 |----------|---------|
 | `read_stations()` | Reads `SwissCities.csv` and filters to the group's region. Station IDs are read as character strings so they pass correctly to the API. |
 | `build_query_table()` | Builds every origin-destination-time combination as a tidy query table that drives the download loop. |
-| `get_routes_batch()` | Fetches routes for all destinations in a single request per time slot using the search.ch `one_to_many` endpoint (5 API calls instead of 70). Saves each result to the same cache format as `get_route()`. |
-| `get_route()` | Downloads one route from the search.ch API, with local caching. Returns a cached `.rds` file if one exists, otherwise calls the API and saves the response. |
+| `get_routes_batch()` | Fetches routes for all destinations in a single request per time slot using the search.ch `one_to_many` endpoint (5 API calls instead of 70).|
 | `parse_routes()` | Flattens one raw API response into a tidy data frame, one row per connection. |
 | `compute_waiting_times()` | For each query keeps the smallest non-negative wait, then summarises the median wait per destination. |
 | `waiting_time_map()` | Produces the regional waiting-time map: canton boundaries, destinations coloured by median wait and sized by population, origin marked with a star. |
@@ -162,8 +161,7 @@ directory.
 search.ch `one_to_many` endpoint to retrieve all 14 destinations in a single
 request per time slot, reducing the total from 70 individual calls to 5. Each
 result is saved to `cache/` as a named `.rds` file (filename encodes origin,
-destination, date, and time), so `get_route()` reads from disk on every
-subsequent run without making any further network requests.
+destination, date, and time).
 
 **Flat function interfaces.** Every function takes and returns plain data frames,
 with no wrapper classes or shared state. Each step is independently testable and

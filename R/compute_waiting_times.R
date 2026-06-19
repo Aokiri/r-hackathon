@@ -40,5 +40,5 @@ compute_waiting_times <- function(routes, query_table) {
     dplyr::ungroup()
   
   dplyr::group_by(next_conn, .data$to_station_id, .data$to_city) |>
-    dplyr::summarise(median_wait = median(.data$wait_min, na.rm = TRUE), .groups = "drop")
+    dplyr::summarise(median_wait = stats::median(.data$wait_min, na.rm = TRUE), .groups = "drop")
 }

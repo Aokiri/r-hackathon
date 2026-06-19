@@ -142,56 +142,17 @@ SwissCities.csv
 
 ## Example usage
 
-```r
-library(hackpkg)
-
-REGION <- "Romandie / Valais"
-DATE   <- "2026-06-19"
-TIMES  <- c("08:00", "10:00", "12:00", "14:00", "16:00")
-
-# 1. Read and filter the station data for our region
-stations <- read_stations(
-  system.file("extdata", "SwissCities.csv", package = "hackpkg"),
-  REGION
-)
-
-# 2. Build the query table: every origin x destination x time
-query_table <- build_query_table(stations, DATE, TIMES)
-
-# 3. Pre-fetch all routes: 5 batch API calls instead of 70 individual ones.
-#    Results are cached as .rds files; get_route() below reads from that cache.
-to_ids <- unique(query_table$to_station_id)
-get_routes_batch(unique(query_table$from_station_id), to_ids, DATE, TIMES,
-                 cache_dir = "cache")
-
-# 4. Load from cache, parse, and combine
-all_routes <- dplyr::bind_rows(
-  lapply(seq_len(nrow(query_table)), function(i) {
-    row  <- query_table[i, ]
-    resp <- get_route(row$from_station_id, row$to_station_id,
-                      row$query_date, row$query_time,
-                      cache_dir = "cache")
-    parse_routes(resp, row$from_station_id, row$to_station_id)
-  })
-)
-
-# 5. Compute median waiting time per destination
-waiting <- compute_waiting_times(all_routes, query_table)
-
-# 6. Draw and save the waiting-time accessibility map
-map <- waiting_time_map(
-  stations, waiting,
-  system.file("extdata", "boundaries", package = "hackpkg")
-)
-print(map)
-ggplot2::ggsave("waiting_time_map.png", map, width = 10, height = 7)
-```
-
-The full workflow is also bundled as a script. Run the whole demo in one line:
+Install the package first (see Installation above), then run the bundled
+workflow in one line:
 
 ```r
 source(system.file("example_workflow.R", package = "hackpkg"))
 ```
+
+This script handles the full pipeline: reading stations, fetching routes via
+`get_routes_batch()` (5 API calls total), parsing connections, computing
+waiting times, and saving the map as `waiting_time_map.png` in the working
+directory.
 
 ---
 

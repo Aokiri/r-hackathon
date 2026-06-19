@@ -4,7 +4,7 @@
 \alias{get_route}
 \title{Download route data from the search.ch timetable API with caching}
 \usage{
-get_route(from, to, date, time, num = 5, cache_dir = "cache")
+get_route(from, to, date, time, num = 5, cache_dir = "cache", delay = 0)
 }
 \arguments{
 \item{from}{Origin station ID (character).}
@@ -18,6 +18,9 @@ get_route(from, to, date, time, num = 5, cache_dir = "cache")
 \item{num}{Number of connections to retrieve.}
 
 \item{cache_dir}{Path to the directory used for caching responses.}
+
+\item{delay}{Seconds to wait before each live API call (default 0). Set to
+a positive value when populating the cache to avoid rate limiting.}
 }
 \value{
 A list with the parsed JSON response from the API.

@@ -108,8 +108,8 @@ SwissCities.csv
       v
   raw API responses  (stored in cache/)
       |
-      |  parse_routes()          flatten each response to one row per connection
-      |  bind_rows()             combine into one table
+      |  parse_routes()          flatten each response to one row per connection,
+      |                          combined with dplyr::bind_rows()
       v
   all_routes table
       |
@@ -213,4 +213,3 @@ use the `.data` pronoun (from `rlang`) so that `R CMD check` does not raise
 The package passes `devtools::check(args = "--no-manual")` with **0 errors and
 0 warnings**, and `devtools::install()` completes without error - the two criteria
 for a passing grade.
-

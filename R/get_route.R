@@ -7,8 +7,8 @@
 #' @param to Destination station ID (character).
 #' @param date Date string ("YYYY-MM-DD").
 #' @param time Time string ("HH:MM").
-#' @param num Number of connections to retrieve.
-#' @param cache_dir Path to the directory used for caching responses.
+#' @param num Number of connections to retrieve (default 5).
+#' @param cache_dir Path to the directory used for caching responses (default "cache").
 #' @param delay Seconds to wait before each live API call (default 0). Set to
 #'   a positive value when populating the cache to avoid rate limiting.
 #' @return A list with the parsed JSON response from the API.

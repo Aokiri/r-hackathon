@@ -15,9 +15,9 @@ get_route(from, to, date, time, num = 5, cache_dir = "cache", delay = 0)
 
 \item{time}{Time string ("HH:MM").}
 
-\item{num}{Number of connections to retrieve.}
+\item{num}{Number of connections to retrieve (default 5).}
 
-\item{cache_dir}{Path to the directory used for caching responses.}
+\item{cache_dir}{Path to the directory used for caching responses (default "cache").}
 
 \item{delay}{Seconds to wait before each live API call (default 0). Set to
 a positive value when populating the cache to avoid rate limiting.}

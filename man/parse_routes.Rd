@@ -14,7 +14,8 @@ parse_routes(response, from_station_id, to_station_id)
 \item{to_station_id}{Destination station ID, added as a column for identification.}
 }
 \value{
-A data frame with one row per connection.
+A data frame with one row per connection, with columns
+  from_station_id, to_station_id, departure, arrival, duration.
 }
 \description{
 Extracts the top-level connection fields from one \code{get_route} response.

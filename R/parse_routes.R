@@ -6,7 +6,8 @@
 #' @param response List returned by \code{get_route}.
 #' @param from_station_id Origin station ID, added as a column for identification.
 #' @param to_station_id Destination station ID, added as a column for identification.
-#' @return A data frame with one row per connection.
+#' @return A data frame with one row per connection, with columns
+#'   from_station_id, to_station_id, departure, arrival, duration.
 #' @export
 #' @examples
 #' resp <- list(connections = data.frame(

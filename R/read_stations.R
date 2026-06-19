@@ -1,3 +1,5 @@
+#' Read and filter the SwissCities station data
+#'
 #' Reads SwissCities.csv and returns only the rows for the given region.
 #'
 #' @param path Path to SwissCities.csv.

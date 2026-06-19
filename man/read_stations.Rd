@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_stations.R
 \name{read_stations}
 \alias{read_stations}
-\title{Reads SwissCities.csv and returns only the rows for the given region.}
+\title{Read and filter the SwissCities station data}
 \usage{
 read_stations(path, region_name)
 }

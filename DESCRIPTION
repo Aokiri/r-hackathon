@@ -1,6 +1,6 @@
 Package: hackpkg
 Type: Package
-Title: What the Package Does (One Line, Title Case)
+Title: Swiss Public Transport Accessibility - Romandie/Valais Region
 Version: 0.1.0
 Authors@R: c(
     person("Alan", "Dominguez", email = "usagiyneko@gmail.com", role = c("aut", "cre")),
@@ -10,7 +10,9 @@ Authors@R: c(
     person("Viktoria", "Kubisova", email = "viktoria.kubisova@student.supsi.ch", role = "aut"),
     person("Maithili", "Nalawade", email = "maithili.nalawade@student.supsi.ch", role = "aut")
   )
-Description: What the package does (one paragraph).
+Description: Tools for querying the search.ch timetable API, computing waiting-time accessibility 
+    indicators between Swiss stations, and producing regional waiting-time maps. Public transport 
+    route data is cached locally to minimise repeated API calls.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Suggests:
